@@ -23,7 +23,7 @@ weekday_person_to_email = {
 
 
 def get_person_to_email(execution_date, **context):
-    return weekday_person_to_email[execution_date.weekday()]
+    return 'email_' + weekday_person_to_email[execution_date.weekday()]
 
 
 branching = BranchPythonOperator(task_id="branching",
