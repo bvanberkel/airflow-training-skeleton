@@ -20,11 +20,11 @@ wait_5 = BashOperator(
 )
 
 wait_1 = BashOperator(
-    task_id="wait_5", bash_command="sleep 1", dag=dag
+    task_id="wait_1", bash_command="sleep 1", dag=dag
 )
 
 wait_10 = BashOperator(
-    task_id="wait_5", bash_command="sleep 10", dag=dag
+    task_id="wait_10", bash_command="sleep 10", dag=dag
 )
 
 the_end = BashOperator(
