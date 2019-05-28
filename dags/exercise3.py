@@ -3,6 +3,7 @@ from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import BranchPythonOperator, PythonOperator
+from airflow import
 
 args = {'owner': 'bas', 'start_date': airflow.utils.dates.days_ago(14)}
 
@@ -36,10 +37,10 @@ print_execution_date = BashOperator(
 )
 
 
-final_task = DummyOperator(task_id='final_task', dag=dag)
+final_task = DummyOperator(task_id='final_task', dag=dag, trigger_rule='one_success')
 
 
 print_execution_date >> branching
 
 for person in ['Alice', 'Bob', 'Joe']:
-    branching >> DummyOperator(task_id=person, dag=dag) >> final_task
+    branching >> DummyOperator(task_id='email_' + person, dag=dag) >> final_task
