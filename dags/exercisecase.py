@@ -52,7 +52,7 @@ class HTTPToCloudStorageOperator(BaseOperator):
             delegate_to=self.delegate_to)
         local_filename = '/tmp/' + self.filename
         f = open(local_filename, "w")
-        f.write(response)
+        f.write(response.text)
         f.close()
         hook.upload(bucket=self.bucket, object=self.filename, filename=local_filename, mime_type='application/json')
 
