@@ -67,7 +67,7 @@ pgsl_to_gcs = PostgresToGoogleCloudStorageOperator(task_id="postgres_to_gcs",
                                                    dag=dag)
 
 http_to_gcs = HTTPToCloudStorageOperator(task_id="exchange_rate_to_gcs",
-                                         endpoint='https://europe-west2-gdd-airflow-training.cloudfunctions.net/airflow-training-transform-valutas?date={{ ds }}&to=EUR',
+                                         endpoint='airflow-training-transform-valutas?date={{ ds }}&to=EUR',
                                          bucket="bvb-data",
                                          filename="exchange_rate_{{ ds }}",
                                          dag=dag)
