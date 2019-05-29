@@ -99,7 +99,7 @@ dataproc_delete_cluster = DataprocClusterDeleteOperator(task_id="dataproc_delete
 
 gcstobq = GoogleCloudStorageToBigQueryOperator(task_id="gcs_to_bq",
                                                bucket="bvb-data",
-                                               source_objects=["output_file_{{ ds }}/*"],
+                                               source_objects=["output_file_{{ ds }}/part-*"],
                                                destination_project_dataset_table="airflowbolcom-may2829-aaadbb22:prices.land_registry_price${{ ds_nodash }}",
                                                source_format="PARQUET",
                                                write_disposition="WRITE_TRUNCATE",
