@@ -23,7 +23,7 @@ class HTTPToCloudStorageOperator(BaseOperator):
                  data=None,
                  headers=None,
                  extra_options=None,
-                 http_conn_id='http_default',
+                 http_conn_id='http_echte_default',
                  delegate_to=None,
                  *args, **kwargs):
         super(HTTPToCloudStorageOperator, self).__init__(*args, **kwargs)
