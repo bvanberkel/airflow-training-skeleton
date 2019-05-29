@@ -7,18 +7,18 @@ from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.hooks.http_hook import HttpHook
 
 
-args = {"owner": "bas",
+default_args = {"owner": "bas",
         "start_date": airflow.utils.dates.days_ago(3)}
 
 dag = DAG(dag_id="exercise4",
-          default_args=args,
+          default_args=default_args,
           schedule_interval="0 0 * * *")
 
 
 class HTTPToCloudStorageOperator(BaseOperator):
 
     template_fields = ('endpoint', 'data', 'destination_cloud_storage_uris', 'labels')
-    template_ext = ('.sql',)
+    template_ext = ()
     ui_color = '#e4e6f0'
 
     @apply_defaults
@@ -68,12 +68,11 @@ pgsl_to_gcs = PostgresToGoogleCloudStorageOperator(task_id="postgres_to_gcs",
                                                    postgres_conn_id="post-conn",
                                                    dag=dag)
 
-http_to_gsc = HTTPToCloudStorageOperator(task_id="exchange_rate_to_gcs",
+http_to_gcs = HTTPToCloudStorageOperator(task_id="exchange_rate_to_gcs",
                                          endpoint='https://europe-west2-gdd-airflow-training.cloudfunctions.net/airflow-training-transform-valutas?date={{ ds }}&to=EUR',
                                          bucket="bvb-data",
                                          filename="exchange_rate_{{ ds }}",
                                          postgres_conn_id="post-conn",
                                          dag=dag)
 
-pgsl_to_gcs
-http_to_gsc
+pgsl_to_gcs >> http_to_gcs
