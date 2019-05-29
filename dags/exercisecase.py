@@ -7,13 +7,6 @@ from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.hooks.http_hook import HttpHook
 
 
-default_args = {"owner": "bas", "start_date": airflow.utils.dates.days_ago(3)}
-
-dag = DAG(dag_id="case",
-          default_args=default_args,
-          schedule_interval="0 0 * * *")
-
-
 class HTTPToCloudStorageOperator(BaseOperator):
 
     template_fields = ('endpoint', 'data', 'destination_cloud_storage_uris', 'labels')
@@ -59,6 +52,12 @@ class HTTPToCloudStorageOperator(BaseOperator):
             delegate_to=self.delegate_to)
         hook.upload(bucket=self.bucket, object=response, filename=self.filename, mime_type='application/json')
 
+
+default_args = {"owner": "bas", "start_date": airflow.utils.dates.days_ago(3)}
+
+dag = DAG(dag_id="case",
+          default_args=default_args,
+          schedule_interval="0 0 * * *")
 
 pgsl_to_gcs = PostgresToGoogleCloudStorageOperator(task_id="postgres_to_gcs",
                                                    sql="SELECT * FROM land_registry_price_paid_uk WHERE transfer_date = '{{ ds }}'",
