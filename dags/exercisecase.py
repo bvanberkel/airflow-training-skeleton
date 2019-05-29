@@ -114,7 +114,7 @@ raw_into_bigquery = DataFlowPythonOperator(task_id="raw_into_bigquery",
                                                                      "temp_location": "gs://bvb-data/tmp"},
                                            py_file="gs://europe-west1-training-airfl-4ecc4ae4-bucket/dataflow_job.py",
                                            options={'input': "gs://bvb-data/daily_load_{{ ds }}",
-                                                    'table': "land_registry_price${{ ds_nodash }}",
+                                                    'table': "land_registry_price_{{ ds }}",
                                                     'dataset': "raw_data"},
                                            dag=dag)
 
@@ -122,5 +122,5 @@ raw_into_bigquery = DataFlowPythonOperator(task_id="raw_into_bigquery",
 pgsl_to_gcs >> dataproc_create_cluster
 http_to_gcs >> dataproc_create_cluster
 dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster
-dataproc_delete_cluster >> gcstobq
+compute_aggregates >> gcstobq
 pgsl_to_gcs >> raw_into_bigquery
