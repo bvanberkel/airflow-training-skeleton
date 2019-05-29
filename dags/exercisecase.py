@@ -123,3 +123,4 @@ pgsl_to_gcs >> dataproc_create_cluster
 http_to_gcs >> dataproc_create_cluster
 dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster
 dataproc_delete_cluster >> gcstobq
+pgsl_to_gcs >> raw_into_bigquery
