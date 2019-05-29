@@ -103,6 +103,7 @@ gcstobq = GoogleCloudStorageToBigQueryOperator(task_id="gcs_to_bq",
                                                destination_project_dataset_table="airflowbolcom-may2829-aaadbb22:prices.land_registry_price${{ ds_nodash }}",
                                                source_format="PARQUET",
                                                write_disposition="WRITE_TRUNCATE",
+                                               autodetect=True,
                                                dag=dag)
 
 
