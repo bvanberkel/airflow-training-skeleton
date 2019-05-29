@@ -114,7 +114,7 @@ raw_into_bigquery = DataFlowPythonOperator(task_id="raw_into_bigquery",
                                                                      "temp_location": "gs://bvb-data/tmp"},
                                            py_file="gs://europe-west1-training-airfl-4ecc4ae4-bucket/dataflow_job.py",
                                            options={'input': "gs://bvb-data/daily_load_{{ ds }}",
-                                                    'table': "land_registry_price_{{ ds }}",
+                                                    'table': "land_registry_price_{{ ds_nodash }}",
                                                     'dataset': "raw_data"},
                                            dag=dag)
 
