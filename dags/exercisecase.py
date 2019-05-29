@@ -50,7 +50,11 @@ class HTTPToCloudStorageOperator(BaseOperator):
         hook = GoogleCloudStorageHook(
             google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
             delegate_to=self.delegate_to)
-        hook.upload(bucket=self.bucket, object=response, filename=self.filename, mime_type='application/json')
+        local_filename = '/tmp/' + self.filename
+        f = open(local_filename, "w")
+        f.write(response)
+        f.close()
+        hook.upload(bucket=self.bucket, object=self.filename, filename=local_filename, mime_type='application/json')
 
 
 default_args = {"owner": "bas", "start_date": airflow.utils.dates.days_ago(3)}
