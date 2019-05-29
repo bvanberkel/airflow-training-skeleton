@@ -9,7 +9,7 @@ from airflow.hooks.http_hook import HttpHook
 
 class HTTPToCloudStorageOperator(BaseOperator):
 
-    template_fields = ('endpoint', 'data', 'destination_cloud_storage_uris', 'labels')
+    template_fields = ('endpoint', 'filename')
     template_ext = ()
     ui_color = '#e4e6f0'
 
