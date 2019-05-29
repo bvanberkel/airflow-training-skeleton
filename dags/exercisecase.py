@@ -7,6 +7,7 @@ from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.hooks.http_hook import HttpHook
 from airflow.contrib.operators.dataproc_operator import (DataprocClusterCreateOperator, DataProcPySparkOperator, DataprocClusterDeleteOperator)
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
+from airflow.contrib.operators.dataflow_operator import DataFlowPythonOperator
 
 class HTTPToCloudStorageOperator(BaseOperator):
 
@@ -106,6 +107,16 @@ gcstobq = GoogleCloudStorageToBigQueryOperator(task_id="gcs_to_bq",
                                                autodetect=True,
                                                dag=dag)
 
+raw_into_bigquery = DataFlowPythonOperator(task_id="raw_into_bigquery",
+                                           dataflow_default_options={"project": 'airflowbolcom-may2829-aaadbb22',
+                                                                     "region": "europe-west1",
+                                                                     "staging_location": "gs://bvb-data/stg",
+                                                                     "temp_location": "gs://bvb-data/tmp"},
+                                           py_file="gs://europe-west1-training-airfl-4ecc4ae4-bucket/dataflow_job.py",
+                                           options={'input': "gs://bvb-data/daily_load_{{ ds }}",
+                                                    'table': "land_registry_price${{ ds_nodash }}",
+                                                    'dataset': "raw_data"},
+                                           dag=dag)
 
 
 pgsl_to_gcs >> dataproc_create_cluster
