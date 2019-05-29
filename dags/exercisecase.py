@@ -5,6 +5,7 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.hooks.http_hook import HttpHook
+from airflow.contrib.operators.dataproc_operator import (DataprocClusterCreateOperator, DataProcPySparkOperator, DataprocClusterDeleteOperator)
 
 
 class HTTPToCloudStorageOperator(BaseOperator):
@@ -76,4 +77,28 @@ http_to_gcs = HTTPToCloudStorageOperator(task_id="exchange_rate_to_gcs",
                                          filename="exchange_rate_{{ ds }}",
                                          dag=dag)
 
-pgsl_to_gcs >> http_to_gcs
+dataproc_create_cluster = DataprocClusterCreateOperator(task_id="dataproc_create",
+                                                        cluster_name="analyse-pricing-{{ ds }}",
+                                                        project_id='airflowbolcom-may2829-aaadbb22',
+                                                        num_workers=2,
+                                                        zone="europe-west4-a",
+                                                        dag=dag)
+
+compute_aggregates = DataProcPySparkOperator(task_id="dataproc_run",
+                                             main="gs://europe-west1-training-airfl-4ecc4ae4-bucket/build-statistics.py",
+                                             cluster_name="analyse-pricing-{{ ds }}",
+                                             arguments=["gs://bvb-data/daily_load_{{ ds}}",
+                                                        "gs://bvb-data/exchange_rate_{{ ds }}",
+                                                        "gs://bvb-data/output_file_{{ ds }}"],
+                                             dag=dag)
+
+dataproc_delete_cluster = DataprocClusterDeleteOperator(task_id="dataproc_delete",
+                                                        cluster_name="analyse-pricing-{{ ds }}",
+                                                        project_id='airflowbolcom-may2829-aaadbb22',
+                                                        dag=dag)
+
+
+
+pgsl_to_gcs >> dataproc_create_cluster
+http_to_gcs >> dataproc_create_cluster
+dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster
