@@ -7,10 +7,9 @@ from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.hooks.http_hook import HttpHook
 
 
-default_args = {"owner": "bas",
-        "start_date": airflow.utils.dates.days_ago(3)}
+default_args = {"owner": "bas", "start_date": airflow.utils.dates.days_ago(3)}
 
-dag = DAG(dag_id="exercise4",
+dag = DAG(dag_id="case",
           default_args=default_args,
           schedule_interval="0 0 * * *")
 
