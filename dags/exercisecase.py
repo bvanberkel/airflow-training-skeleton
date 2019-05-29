@@ -6,7 +6,7 @@ from airflow.utils.decorators import apply_defaults
 from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.hooks.http_hook import HttpHook
 from airflow.contrib.operators.dataproc_operator import (DataprocClusterCreateOperator, DataProcPySparkOperator, DataprocClusterDeleteOperator)
-
+from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
 class HTTPToCloudStorageOperator(BaseOperator):
 
@@ -97,8 +97,17 @@ dataproc_delete_cluster = DataprocClusterDeleteOperator(task_id="dataproc_delete
                                                         project_id='airflowbolcom-may2829-aaadbb22',
                                                         dag=dag)
 
+gcstobq = GoogleCloudStorageToBigQueryOperator(task_id="gcs_to_bq",
+                                               bucket="bvb-data",
+                                               source_objects=["output_file_{{ ds }}/*"],
+                                               destination_project_dataset_table="airflowbolcom-may2829-aaadbb22:prices.land_registry_price${{ ds_nodash }}",
+                                               source_format="PARQUET",
+                                               write_disposition="WRITE_TRUNCATE",
+                                               dag=dag)
+
 
 
 pgsl_to_gcs >> dataproc_create_cluster
 http_to_gcs >> dataproc_create_cluster
 dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster
+dataproc_delete_cluster >> gcstobq
