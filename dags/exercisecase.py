@@ -85,7 +85,7 @@ dataproc_create_cluster = DataprocClusterCreateOperator(task_id="dataproc_create
                                                         dag=dag)
 
 compute_aggregates = DataProcPySparkOperator(task_id="dataproc_run",
-                                             main="gs://europe-west1-training-airfl-4ecc4ae4-bucket/build-statistics.py",
+                                             main="gs://europe-west1-training-airfl-4ecc4ae4-bucket/build_statistics.py",
                                              cluster_name="analyse-pricing-{{ ds }}",
                                              arguments=["gs://bvb-data/daily_load_{{ ds}}",
                                                         "gs://bvb-data/exchange_rate_{{ ds }}",
